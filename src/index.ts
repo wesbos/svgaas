@@ -28,7 +28,7 @@ export default {
     if(!path.endsWith('.svg')) {
       return new Response('You should end your url with .svg', { status: 404 });
     }
-    const searchTerm = path.replace('.svg', '');
+    const searchTerm = path.replace(/\.svg$/, '');
     // otherwise fetch the SVG
     // This endpoint will probably change, you are supposed to pay for it
     const res = await fetch(`https://api.svgapi.com/v1/Ty5WcDa63E/list/?search=${searchTerm}&limit=10`);
