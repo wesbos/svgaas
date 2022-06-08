@@ -25,6 +25,10 @@ export default {
   ): Promise<Response> {
     const url = new URL(request.url);
     const path = decodeURIComponent(url.pathname).replace('/', '');
+
+    const searchFill = url.searchParams.get('fill');
+    const fill = searchFill ? `#${searchFill}` : '#000000';
+
     if(!path.endsWith('.svg')) {
       return new Response(/*html*/`
       <head>
@@ -57,6 +61,14 @@ export default {
       return fetch(`https://cdn.svgapi.com/vector/94277/blank-file.svg`);
     }
     // return a random one
-    return fetch(icons[Math.floor(Math.random() * icons.length)].url);
+    const svgResponse = await fetch(icons[Math.floor(Math.random() * icons.length)].url);
+    const svgText = await svgResponse.text();
+    const filledSVG = svgText.replace('<svg ', `<svg fill="${fill || '#000000'}" `);
+    // console.log(filledSVG)
+    return new Response(filledSVG, {
+      headers: {
+        'Content-Type': 'image/svg+xml',
+      }
+    });
   },
 };
